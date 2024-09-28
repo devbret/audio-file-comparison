@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Audio Analysis Subdata Comparison</title>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+            body {
+                font-family: 'Roboto', sans-serif;
+                background: linear-gradient(to right, #232526, #414345);
+                color: #f5f5f5;
+                margin: 0;
+                padding: 0px 0px 43px 0px;
+            }
+
+            h1,
+            h2 {
+                text-align: center;
+                font-weight: 700;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 3rem;
+                margin-top: 40px;
+                color: #f5f5f5;
+            }
+
+            h2 {
+                font-size: 2rem;
+                color: #eeeeee;
+            }
+
+            .chart {
+                display: inline-block;
+                margin: 10px;
+                padding: 10px;
+                background-color: #000;
+                border-radius: 10px;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+                transition: transform 0.3s ease;
+            }
+
+            .chart:hover {
+                transform: translateY(-10px);
+            }
+
+            svg {
+                font: 10px 'Roboto', sans-serif;
+            }
+
+            .axis line,
+            .axis path {
+                stroke: #888;
+            }
+
+            .axis text {
+                font-size: 12px;
+                fill: #dddddd;
+            }
+
+            .bar {
+                fill: #42a5f5;
+                transition: fill 0.3s, height 0.3s;
+            }
+
+            .bar:hover {
+                fill: #ff7043;
+            }
+
+            .legend {
+                font-size: 16px;
+                font-weight: 500;
+                fill: #ffffff;
+            }
+
+            .chart-title {
+                font-size: 1.5rem;
+                text-align: center;
+                margin-top: 10px;
+                color: #f5f5f5;
+            }
+
+            .chart-container {
+                width: 100%;
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            @media (max-width: 768px) {
+                .chart {
+                    margin: 10px;
+                    padding: 15px;
+                }
+
+                h1 {
+                    font-size: 2.5rem;
+                }
+
+                h2 {
+                    font-size: 1.5rem;
+                }
+
+                .legend {
+                    font-size: 14px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Audio File Analysis - Metrics Comparison</h1>
+
+        <h2>Average Metrics</h2>
+        <div id="average_onsets_chart" class="chart"></div>
+        <div id="average_tempo_chart" class="chart"></div>
+        <div id="average_loudness_chart" class="chart"></div>
+        <div id="average_spectral_centroid_chart" class="chart"></div>
+        <div id="average_spectral_bandwidth_chart" class="chart"></div>
+        <div id="average_zero_crossing_rate_chart" class="chart"></div>
+        <div id="average_spectral_rolloff_chart" class="chart"></div>
+        <div id="average_harmonics_chart" class="chart"></div>
+        <div id="average_percussives_chart" class="chart"></div>
+
+        <h2>Subdata Comparisons</h2>
+        <div id="timbre_chart" class="chart"></div>
+        <div id="chroma_chart" class="chart"></div>
+        <div id="spectral_contrast_chart" class="chart"></div>
+        <div id="average_tonnetz_chart" class="chart"></div>
+
+        <script>
+            function createBarChart(containerId, metricKey, yLabel, metricData, colorScale) {
+                const width = 500;
+                const height = 300;
+                const margin = { top: 33, right: 20, bottom: 100, left: 60 };
+
+                const svg = d3
+                    .select(containerId)
+                    .append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top + margin.bottom)
+                    .append('g')
+                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+                const x = d3.scaleBand().domain(Object.keys(metricData)).range([0, width]).padding(0.1);
+                const y = d3
+                    .scaleLinear()
+                    .domain([0, d3.max(Object.values(metricData))])
+                    .nice()
+                    .range([height, 0]);
+
+                svg.append('g')
+                    .attr('class', 'axis')
+                    .attr('transform', 'translate(0,' + height + ')')
+                    .call(d3.axisBottom(x))
+                    .selectAll('text')
+                    .attr('transform', 'rotate(-45)')
+                    .style('text-anchor', 'end');
+
+                svg.append('g').attr('class', 'axis').call(d3.axisLeft(y));
+
+                svg.append('text')
+                    .attr('transform', 'rotate(-90)')
+                    .attr('y', -margin.left + 10)
+                    .attr('x', -height / 2)
+                    .attr('dy', '1em')
+                    .style('text-anchor', 'middle')
+                    .text(yLabel);
+
+                svg.selectAll('.bar')
+                    .data(Object.keys(metricData))
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'bar')
+                    .attr('x', (d) => x(d))
+                    .attr('width', x.bandwidth())
+                    .attr('y', (d) => y(metricData[d]))
+                    .attr('height', (d) => height - y(metricData[d]))
+                    .attr('fill', (d) => colorScale(d));
+
+                svg.append('text')
+                    .attr('x', width / 2)
+                    .attr('y', -10)
+                    .attr('text-anchor', 'middle')
+                    .attr('class', 'legend')
+                    .text(metricKey);
+            }
+
+            function createGroupedBarChart(containerId, metricKey, yLabel, metricData, subMetrics, colorScale) {
+                const width = 500;
+                const height = 300;
+                const margin = { top: 33, right: 20, bottom: 100, left: 60 };
+
+                const svg = d3
+                    .select(containerId)
+                    .append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top + margin.bottom)
+                    .append('g')
+                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+                const x0 = d3.scaleBand().domain(subMetrics).range([0, width]).padding(0.1);
+
+                const x1 = d3.scaleBand().domain(Object.keys(metricData)).range([0, x0.bandwidth()]).padding(0.05);
+
+                const y = d3
+                    .scaleLinear()
+                    .domain([0, d3.max(subMetrics, (sub) => d3.max(Object.keys(metricData), (track) => metricData[track][sub]))])
+                    .nice()
+                    .range([height, 0]);
+
+                svg.append('g')
+                    .attr('class', 'axis')
+                    .attr('transform', 'translate(0,' + height + ')')
+                    .call(d3.axisBottom(x0))
+                    .selectAll('text')
+                    .attr('transform', 'rotate(-45)')
+                    .style('text-anchor', 'end');
+
+                svg.append('g').attr('class', 'axis').call(d3.axisLeft(y));
+
+                svg.append('text')
+                    .attr('transform', 'rotate(-90)')
+                    .attr('y', -margin.left + 10)
+                    .attr('x', -height / 2)
+                    .attr('dy', '1em')
+                    .style('text-anchor', 'middle')
+                    .text(yLabel);
+
+                const trackGroups = svg
+                    .selectAll('.track')
+                    .data(subMetrics)
+                    .enter()
+                    .append('g')
+                    .attr('class', 'track')
+                    .attr('transform', (d) => 'translate(' + x0(d) + ',0)');
+
+                trackGroups
+                    .selectAll('rect')
+                    .data((d) => Object.keys(metricData).map((track) => ({ track, value: metricData[track][d] })))
+                    .enter()
+                    .append('rect')
+                    .attr('x', (d) => x1(d.track))
+                    .attr('width', x1.bandwidth())
+                    .attr('y', (d) => y(d.value))
+                    .attr('height', (d) => height - y(d.value))
+                    .attr('fill', (d) => colorScale(d.track));
+
+                svg.append('text')
+                    .attr('x', width / 2)
+                    .attr('y', -10)
+                    .attr('text-anchor', 'middle')
+                    .attr('class', 'legend')
+                    .text(metricKey);
+            }
+
+            fetch('audio_analysis_averages.json')
+                .then((response) => response.json())
+                .then((data) => {
+                    const tracks = Object.keys(data);
+                    const color = d3.scaleOrdinal(d3.schemeCategory10).domain(tracks);
+
+                    const averageOnsets = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_onsets }), {});
+                    createBarChart('#average_onsets_chart', 'Average Onsets', 'Value', averageOnsets, color);
+
+                    const averageTempo = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_tempo }), {});
+                    createBarChart('#average_tempo_chart', 'Average Tempo', 'Value', averageTempo, color);
+
+                    const averageLoudness = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_loudness }), {});
+                    createBarChart('#average_loudness_chart', 'Average Loudness', 'Value', averageLoudness, color);
+
+                    const averageSpectralCentroid = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_spectral_centroid }), {});
+                    createBarChart('#average_spectral_centroid_chart', 'Average Spectral Centroid', 'Value', averageSpectralCentroid, color);
+
+                    const averageSpectralBandwidth = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_spectral_bandwidth }), {});
+                    createBarChart('#average_spectral_bandwidth_chart', 'Average Spectral Bandwidth', 'Value', averageSpectralBandwidth, color);
+
+                    const averageZeroCrossingRate = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_zero_crossing_rate }), {});
+                    createBarChart('#average_zero_crossing_rate_chart', 'Average Zero Crossing Rate', 'Value', averageZeroCrossingRate, color);
+
+                    const averageSpectralRolloff = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_spectral_rolloff }), {});
+                    createBarChart('#average_spectral_rolloff_chart', 'Average Spectral Rolloff', 'Value', averageSpectralRolloff, color);
+
+                    const averageHarmonics = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_harmonics }), {});
+                    createBarChart('#average_harmonics_chart', 'Average Harmonics', 'Value', averageHarmonics, color);
+
+                    const averagePercussives = tracks.reduce((acc, track) => ({ ...acc, [track]: data[track].average_percussives }), {});
+                    createBarChart('#average_percussives_chart', 'Average Percussives', 'Value', averagePercussives, color);
+
+                    const timbreData = {};
+                    const mfccKeys = Array.from({ length: 20 }, (_, i) => 'mfcc' + (i + 1));
+                    tracks.forEach((track) => {
+                        timbreData[track] = mfccKeys.reduce((acc, key) => ({ ...acc, [key]: data[track].average_timbre[key] }), {});
+                    });
+                    createGroupedBarChart('#timbre_chart', 'MFCC (1-20)', 'MFCC Values', timbreData, mfccKeys, color);
+
+                    const chromaData = {};
+                    const chromaKeys = Array.from({ length: 12 }, (_, i) => 'chroma' + (i + 1));
+                    tracks.forEach((track) => {
+                        chromaData[track] = chromaKeys.reduce((acc, key) => ({ ...acc, [key]: data[track].average_chroma[key] }), {});
+                    });
+                    createGroupedBarChart('#chroma_chart', 'Chroma (1-12)', 'Chroma Values', chromaData, chromaKeys, color);
+
+                    const spectralContrastData = {};
+                    const contrastKeys = Array.from({ length: 7 }, (_, i) => 'contrast' + (i + 1));
+                    tracks.forEach((track) => {
+                        spectralContrastData[track] = contrastKeys.reduce((acc, key) => ({ ...acc, [key]: data[track].average_spectral_contrast[key] }), {});
+                    });
+                    createGroupedBarChart(
+                        '#spectral_contrast_chart',
+                        'Spectral Contrast (1-7)',
+                        'Spectral Contrast',
+                        spectralContrastData,
+                        contrastKeys,
+                        color
+                    );
+
+                    const tonnetzData = {};
+                    const tonnetzKeys = Array.from({ length: 6 }, (_, i) => 'tonnetz' + (i + 1));
+                    tracks.forEach((track) => {
+                        tonnetzData[track] = tonnetzKeys.reduce((acc, key) => ({ ...acc, [key]: data[track].average_tonnetz[key] }), {});
+                    });
+                    createGroupedBarChart('#average_tonnetz_chart', 'Tonnetz (1-6)', 'Tonnetz Values', tonnetzData, tonnetzKeys, color);
+                })
+                .catch((error) => console.error('Error loading JSON:', error));
+        </script>
+    </body>
+</html>
