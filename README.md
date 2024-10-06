@@ -1,6 +1,6 @@
 # Audio File Comparison
 
-![Graphs comparing thirteen metrics from separate audio files.](https://hosting.photobucket.com/bbcfb0d4-be20-44a0-94dc-65bff8947cf2/095a6dbc-c863-412a-9abc-7d0905cf9311.png)
+![Graphs comparing thirteen metrics from separate audio files.](https://hosting.photobucket.com/bbcfb0d4-be20-44a0-94dc-65bff8947cf2/99c80b7c-0c6a-484a-967f-62e080aa4d95.png)
 
 Comparing metrics from another program.
 
