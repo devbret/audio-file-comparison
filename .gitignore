@@ -1,3 +1,4 @@
 .vscode/
 venv/
 audio_analysis_averages.json
+audio_analysis_enhanced.json
