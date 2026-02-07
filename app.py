@@ -2,7 +2,7 @@ import json
 import os
 import numpy as np
 
-input_file = "/your/file/path/audio_analysis_enhanced.json"
+input_file = "audio_analysis_enhanced.json"
 output_file = "audio_analysis_averages.json"
 
 def calculate_average_for_metric(metric_data, key="value"):
