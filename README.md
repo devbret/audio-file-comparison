@@ -2,14 +2,22 @@
 
 ![Graphs comparing thirteen metrics from separate audio files.](https://hosting.photobucket.com/bbcfb0d4-be20-44a0-94dc-65bff8947cf2/99c80b7c-0c6a-484a-967f-62e080aa4d95.png)
 
-Comparing metrics from another program.
+Processes detailed audio data with Python to compute average metrics and then visualizes those comparisons using D3.js bar and grouped bar charts.
+
+## Overview
+
+Using Python and NumPy, the app first extracts key metrics. The script then aggregates the data into single representative averages for each metric, producing a simplified JSON output for track-to-track comparison.
+
+Next, the frontend dynamically loads the processed JSON file and generates both standard bar charts and grouped bar charts. This allows users to visually compare multiple audio tracks in a structured format.
+
+The Python backend and D3-based frontend create a complete pipeline for transforming audio data into clear visual insights.
 
 ## Set Up
 
 ### Programs Needed
 
--   [Git](https://git-scm.com/downloads)
--   [Python](https://www.python.org/downloads/) (When installing on Windows, make sure you check the ["Add python 3.xx to PATH"](https://hosting.photobucket.com/images/i/bernhoftbret/python.png) box.)
+- [Git](https://git-scm.com/downloads)
+- [Python](https://www.python.org/downloads/) (When installing on Windows, make sure you check the ["Add python 3.xx to PATH"](https://hosting.photobucket.com/images/i/bernhoftbret/python.png) box.)
 
 ### Steps
 
