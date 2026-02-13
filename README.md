@@ -1,6 +1,6 @@
 # Audio File Comparison
 
-![Graphs comparing thirteen metrics from separate audio files.](https://hosting.photobucket.com/bbcfb0d4-be20-44a0-94dc-65bff8947cf2/99c80b7c-0c6a-484a-967f-62e080aa4d95.png)
+![Graphs comparing thirteen metrics from separate audio files.](https://hosting.photobucket.com/bbcfb0d4-be20-44a0-94dc-65bff8947cf2/a2c80672-6b31-4afb-87b4-2d70e7cf25b5.png)
 
 Processes detailed audio data with Python to compute average metrics and then visualizes those comparisons using D3.js bar and grouped bar charts.
 
@@ -17,13 +17,13 @@ The Python backend and D3-based frontend create a complete pipeline for transfor
 ### Programs Needed
 
 - [Git](https://git-scm.com/downloads)
-- [Python](https://www.python.org/downloads/) (When installing on Windows, make sure you check the ["Add python 3.xx to PATH"](https://hosting.photobucket.com/images/i/bernhoftbret/python.png) box.)
+- [Python](https://www.python.org/downloads/)
 
 ### Steps
 
 1. Install the above programs.
-2. Open a shell window (For Windows open PowerShell, for MacOS open Terminal & for Linux open your distro's terminal emulator).
-3. Clone this repository using `git` by running the following command; `git clone https://github.com/devbret/audio-file-comparison`.
+2. Open a shell window (for Windows open PowerShell, for MacOS open Terminal and for Linux open your distro's terminal emulator).
+3. Clone this repository using `git` by running the following command; `git clone git@github.com:devbret/audio-file-comparison.git`.
 4. Navigate to the repo's directory by running; `cd audio-file-comparison`.
 5. Install the needed dependencies for running the script with the following command; `pip install -r requirements.txt`.
 6. Update line five in app.py, with the path to the correct JSON file.
