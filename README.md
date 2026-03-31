@@ -19,6 +19,7 @@ Below are the required software programs and instructions for installing and usi
 ### Programs Needed
 
 - [Git](https://git-scm.com/downloads)
+
 - [Python](https://www.python.org/downloads/)
 
 ### Steps
