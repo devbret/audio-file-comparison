@@ -2,19 +2,19 @@
 
 ![Graphs comparing thirteen metrics from separate audio files.](https://hosting.photobucket.com/bbcfb0d4-be20-44a0-94dc-65bff8947cf2/a2c80672-6b31-4afb-87b4-2d70e7cf25b5.png)
 
-Processes detailed audio data with Python to compute average metrics and then visualizes those comparisons using D3.js bar and grouped bar charts.
+Process detailed audio analysis data with Python to calculate average track metrics, then visualize the results with D3.js bar charts for clear comparisons.
 
-## Overview
+## Application Overview
 
-Using Python and NumPy, the app first extracts key metrics. The script then aggregates the data into single representative averages for each metric, producing a simplified JSON output for track-to-track comparison.
+Using Python and NumPy, this project processes an enhanced audio analysis `JSON` file and reduces metric data into representative averages for each track. The script calculates mean values for core audio features such as onsets, loudness, tempo, percussive content and others.
 
-Next, the frontend dynamically loads the processed JSON file and generates both standard bar charts and grouped bar charts. This allows users to visually compare multiple audio tracks in a structured format.
+For multidimensional metrics, including timbre, chroma and tonnetz data, the script preserves individual feature bands while calculating an average for each one. The result is a cleaner `audio_analysis_averages.json` file which keeps the structure needed for comparison.
 
-The Python backend and D3-based frontend create a complete pipeline for transforming audio data into clear visual insights.
+The processed JSON output is then be loaded by the frontend to generate bar charts. Together, the Python processing script and D3 visualizations create a workflow to turn dense audio analysis data into clear visual comparisons.
 
-## Set Up
+## Basic Setup Instructions
 
-Below are the required software programs and instructions for installing and using this application.
+Below are the required software programs and instructions for installing and using this application on a Linux machine.
 
 ### Programs Needed
 
@@ -28,24 +28,38 @@ Below are the required software programs and instructions for installing and usi
 
 2. Open a terminal
 
-3. Clone this repository using `git` by running the following command: `git clone git@github.com:devbret/audio-file-comparison.git`
+3. Clone this repository: `git clone git@github.com:devbret/audio-file-comparison.git`
 
-4. Navigate to the repo's directory by running: `cd audio-file-comparison`
+4. Navigate to the repo's directory: `cd audio-file-comparison`
 
-5. Install the needed dependencies for running the script with the following command: `pip install -r requirements.txt`
+5. Create a virtual environment: `python3 -m venv venv`
 
-6. Update line five in app.py, with the path to the correct JSON file
+6. Activate a virtual environment: `source venv/bin/activate`
 
-7. Run the script with the command: `python3 app.py`
+7. Install the needed dependencies: `pip install -r requirements.txt`
 
-8. Run the following command to launch a server for the frontend visualization `python3 -m http.server`
+8. Place your `audio_analysis_enhanced.json` file at the root of this repo
+
+9. Run the script: `python3 app.py`
+
+10. Launch an HTTP server: `python3 -m http.server`
+
+11. Access the frontend in a browser: `http://localhost:8000`
+
+12. When finished, shutdown the HTTP server: `CTRL + c`
+
+13. Exit the virtual environment: `deactivate`
 
 ## Other Considerations
 
 This project repo is intended to demonstrate an ability to do the following:
 
-- Process raw audio feature data with Python to compute aggregated metrics
+- Process detailed audio analysis data with Python and visualize track comparisons using D3.js bar charts
 
-- Compare complex audio features across multiple tracks for exploratory analysis
+- Convert complex audio metrics into simplified averages so users can easily compare multiple tracks
+
+- Analyze audio feature data, calculate representative averages and turn the results into clear comparisons
+
+- Create a workflow for transforming audio analysis JSON into readable visual insights
 
 If you have any questions or would like to collaborate, please reach out either on GitHub or via [my website](https://bretbernhoft.com/).
