@@ -10,7 +10,7 @@ Using Python and NumPy, this project processes an enhanced audio analysis `JSON`
 
 For multidimensional metrics, including timbre, chroma and tonnetz data, the script preserves individual feature bands while calculating an average for each one. The result is a cleaner `audio_analysis_averages.json` file which keeps the structure needed for comparison.
 
-The processed JSON output is then be loaded by the frontend to generate bar charts. Together, the Python processing script and D3 visualizations create a workflow to turn dense audio analysis data into clear visual comparisons.
+The processed JSON output is then loaded by the frontend to generate bar charts. Together, the Python processing script and D3 visualizations create a workflow to turn dense audio analysis data into clear visual comparisons.
 
 ## Basic Setup Instructions
 
@@ -52,6 +52,10 @@ Below are the required software programs and instructions for installing and usi
 
 ## Other Considerations
 
+The sections below cover details about this repo which fall outside of setup and usage. The first outlines the skills this project is meant to demonstrate, while the second section explains the terms under which the code is licensed and how to get in touch.
+
+### Abilities Demonstrated
+
 This project repo is intended to demonstrate an ability to do the following:
 
 - Process detailed audio analysis data with Python and visualize track comparisons using D3.js bar charts
@@ -61,5 +65,9 @@ This project repo is intended to demonstrate an ability to do the following:
 - Analyze audio feature data, calculate representative averages and turn the results into clear comparisons
 
 - Create a workflow for transforming audio analysis JSON into readable visual insights
+
+### License Information
+
+This project is released under the [MIT License](LICENSE). You are free to use, modify, publish, distribute and sell copies of this software so long as the original copyright notice and permission notice are included with any substantial portion of the code. The software is provided "as is", without warranty of any kind, and the author is not liable for any claim or damages arising from its use.
 
 If you have any questions or would like to collaborate, please reach out either on GitHub or via [my website](https://bretbernhoft.com/).
